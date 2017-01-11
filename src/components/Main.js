@@ -169,7 +169,7 @@ var GalleryByReactApp = React.createClass({
         // var imgFigureDOM = ReactDOM.findDOMNode(this.refs.imgFigure0),
         var imgFigureDOM = this.refs.imgFigure0.refs.figure,
             imgW = imgFigureDOM.scrollWidth,
-            imgH = imgFigureDOM.scrollWidth,
+            imgH = imgFigureDOM.scrollHeight,
             halfImgW = Math.ceil(imgW / 2),
             halfImgH = Math.ceil(imgH / 2);
 
