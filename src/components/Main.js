@@ -23,6 +23,12 @@ imageDatas = (function genImageURL(imageDatasArr) {
 function getRangeRandom(low, high) {
     return Math.ceil(Math.random() * (high - low) + low);
 }
+/**
+ * 获取0-30之间的一个任意正负值
+ */
+function get30DegRandom() {
+    return (Math.random() > 0.5 ? '' : '-') + Math.ceil(Math.random() * 30);
+}
 
 var ImgFigure = React.createClass({
 
@@ -33,9 +39,18 @@ var ImgFigure = React.createClass({
         if (this.props.arrange.pos) {
             styleObj = this.props.arrange.pos;
         }
-        console.log(styleObj);
+
+        //如果图片的旋转角度有值并且不为0,添加旋转角度
+        if (this.props.arrange.rotate) {
+            (['MozTransform', 'msTransform', 'WebkitTransform', 'transform']).forEach(function (value) {
+                styleObj[value] = 'rotate(' + this.props.arrange.rotate + 'deg)';
+            }.bind(this));
+
+        }
+
+
         return (
-            <figure className="img-figure" style={styleObj}   ref="figure">
+            <figure className="img-figure" style={styleObj} ref="figure">
                 <img src={this.props.data.imageURL}
                      alt={this.props.data.title}
                 />
@@ -83,15 +98,17 @@ var GalleryByReactApp = React.createClass({
             vPosRangeX = vPosRange.x,
 
             imgsArrangeTopArr = [],
-            topImgNum = Math.floor(Math.random() * 2),   //不取或者取一个
+            topImgNum = Math.ceil(Math.random() * 2),   //不取或者取一个
             topImgSpliceIndex = 0,
 
             imgsArrangeCenterArr = imgsArrangeArr.splice(centerIndex, 1);
 
         //首先居中centerIndex的图片，居中的centerIndex的图片不需要旋转
         imgsArrangeCenterArr[0] = {
-            pos: centerPos
+            pos: centerPos,
+            rotate: 0
         };
+
 
         //取出要布局上侧的图片的状态信息
         topImgSpliceIndex = Math.ceil(Math.random() * (imgsArrangeArr.length - topImgNum));
@@ -103,7 +120,8 @@ var GalleryByReactApp = React.createClass({
                 pos: {
                     top: getRangeRandom(vPosRangeTopY[0], vPosRangeTopY[1]),
                     left: getRangeRandom(vPosRangeX[0], vPosRangeX[1])
-                }
+                },
+                rotate: get30DegRandom()
             };
         });
 
@@ -122,7 +140,8 @@ var GalleryByReactApp = React.createClass({
                 pos: {
                     top: getRangeRandom(hPosRangeY[0], hPosRangeY[1]),
                     left: getRangeRandom(hPosRangeLORX[0], hPosRangeLORX[1])
-                }
+                },
+                rotate: get30DegRandom()
             };
         }
 
@@ -205,7 +224,8 @@ var GalleryByReactApp = React.createClass({
                     pos: {
                         left: 0,
                         top: 0
-                    }
+                    },
+                    rotate: 0
                 };
             }
 
