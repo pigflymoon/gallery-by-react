@@ -32,6 +32,12 @@ function get30DegRandom() {
 
 var ImgFigure = React.createClass({
 
+    handleClick: function (e) {
+        console.log('clicked');
+        this.props.inverse();
+        e.stopPropagation();
+        e.preventDefault();
+    },
 
     render: function () {
 
@@ -48,14 +54,22 @@ var ImgFigure = React.createClass({
 
         }
 
+        var imgFigureClassName = "img-figure";
+        imgFigureClassName += this.props.arrange.isInverse ? ' is-inverse' : '';
 
         return (
-            <figure className="img-figure" style={styleObj} ref="figure">
+            <figure className={imgFigureClassName}  style={styleObj} ref="figure"
+                    onClick={this.handleClick}>
                 <img src={this.props.data.imageURL}
                      alt={this.props.data.title}
                 />
                 <figcaption>
                     <h2 className="img-title">{this.props.data.title}</h2>
+                    <div className="img-back" onClick={this.handleClick}>
+                        <p>
+                            {this.props.data.desc}
+                        </p>
+                    </div>
                 </figcaption>
             </figure >
         );
@@ -78,6 +92,22 @@ var GalleryByReactApp = React.createClass({
             x: [0, 0],
             topY: [0, 0]
         }
+    },
+
+    /*
+     * 翻转图片
+     * @param index 输入当前被执行inverse操作的图片对应的图片信息数组的index值
+     * return {Function} 这是一个闭包函数,其return一个真正被执行的函数
+     */
+    inverse: function (index) {
+        return function () {
+            var imgsArrangeArr = this.state.imgsArrangeArr;
+            imgsArrangeArr[index].isInverse = !imgsArrangeArr[index].isInverse;
+
+            this.setState({
+                imgsArrangeArr: imgsArrangeArr
+            });
+        }.bind(this);
     },
 
 
@@ -225,14 +255,13 @@ var GalleryByReactApp = React.createClass({
                         left: 0,
                         top: 0
                     },
-                    rotate: 0
+                    rotate: 0,
+                    isInverse: false
                 };
             }
 
             imgFigures.push(<ImgFigure data={value} ref={'imgFigure' + index} key={index}
-                                       arrange={this.state.imgsArrangeArr[index]}/>);
-
-
+                                       arrange={this.state.imgsArrangeArr[index]} inverse={this.inverse(index)}/>);
         }.bind(this));
 
         return (
