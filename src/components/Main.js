@@ -4,7 +4,6 @@ require('styles/App.scss');
 import React from 'react';
 
 //获取图片相关信息
-// var imageDatas = require('../data/imageDatas.json');
 let imageDatas = require('../data/imageDatas.json');
 
 //利用自执行函数，将图片名信息转成图片URL路径信息
