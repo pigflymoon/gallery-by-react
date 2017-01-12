@@ -34,13 +34,19 @@ var ImgFigure = React.createClass({
 
     handleClick: function (e) {
         console.log('clicked');
-        this.props.inverse();
+        if (this.props.arrange.isCenter) {
+            console.log('center');
+            this.props.inverse();
+        } else {
+            console.log(' set to be center');
+            this.props.center();
+        }
+       
         e.stopPropagation();
         e.preventDefault();
     },
 
     render: function () {
-
         var styleObj = {};
         if (this.props.arrange.pos) {
             styleObj = this.props.arrange.pos;
@@ -58,7 +64,7 @@ var ImgFigure = React.createClass({
         imgFigureClassName += this.props.arrange.isInverse ? ' is-inverse' : '';
 
         return (
-            <figure className={imgFigureClassName}  style={styleObj} ref="figure"
+            <figure className={imgFigureClassName} style={styleObj} ref="figure"
                     onClick={this.handleClick}>
                 <img src={this.props.data.imageURL}
                      alt={this.props.data.title}
@@ -103,7 +109,7 @@ var GalleryByReactApp = React.createClass({
         return function () {
             var imgsArrangeArr = this.state.imgsArrangeArr;
             imgsArrangeArr[index].isInverse = !imgsArrangeArr[index].isInverse;
-
+            console.log('inverse');
             this.setState({
                 imgsArrangeArr: imgsArrangeArr
             });
@@ -136,7 +142,8 @@ var GalleryByReactApp = React.createClass({
         //首先居中centerIndex的图片，居中的centerIndex的图片不需要旋转
         imgsArrangeCenterArr[0] = {
             pos: centerPos,
-            rotate: 0
+            rotate: 0,
+            isCenter: true
         };
 
 
@@ -151,7 +158,8 @@ var GalleryByReactApp = React.createClass({
                     top: getRangeRandom(vPosRangeTopY[0], vPosRangeTopY[1]),
                     left: getRangeRandom(vPosRangeX[0], vPosRangeX[1])
                 },
-                rotate: get30DegRandom()
+                rotate: get30DegRandom(),
+                isCenter: false
             };
         });
 
@@ -171,7 +179,8 @@ var GalleryByReactApp = React.createClass({
                     top: getRangeRandom(hPosRangeY[0], hPosRangeY[1]),
                     left: getRangeRandom(hPosRangeLORX[0], hPosRangeLORX[1])
                 },
-                rotate: get30DegRandom()
+                rotate: get30DegRandom(),
+                isCenter: false
             };
         }
 
@@ -186,6 +195,16 @@ var GalleryByReactApp = React.createClass({
         });
     },
 
+    /**
+     * 利用rearrange函数,居中对应index的图片
+     * @param index 需要被居中的图片对应的图片信息数组的index值
+     * @returns {Function}
+     */
+    center: function (index) {
+        return function () {
+            this.rearrange(index);
+        }.bind(this);
+    },
 
     getInitialState: function () {
         return {
@@ -256,12 +275,14 @@ var GalleryByReactApp = React.createClass({
                         top: 0
                     },
                     rotate: 0,
-                    isInverse: false
+                    isInverse: false,
+                    isCenter: false
                 };
             }
 
             imgFigures.push(<ImgFigure data={value} ref={'imgFigure' + index} key={index}
-                                       arrange={this.state.imgsArrangeArr[index]} inverse={this.inverse(index)}/>);
+                                       arrange={this.state.imgsArrangeArr[index]} inverse={this.inverse(index)}
+                                       center={this.center(index)}/>);
         }.bind(this));
 
         return (
