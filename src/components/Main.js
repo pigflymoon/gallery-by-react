@@ -41,7 +41,7 @@ var ImgFigure = React.createClass({
             console.log(' set to be center');
             this.props.center();
         }
-       
+
         e.stopPropagation();
         e.preventDefault();
     },
@@ -81,6 +81,20 @@ var ImgFigure = React.createClass({
         );
     }
 });
+
+var ControllerUnit = React.createClass({
+        handleClick: function (e) {
+
+            e.preventDefault();
+            e.stopPropagation();
+        },
+        render: function () {
+            return (
+                <span className="controller-unit" onClick={this.handleClick}></span>
+            );
+        }
+    })
+    ;
 
 
 var GalleryByReactApp = React.createClass({
@@ -283,7 +297,9 @@ var GalleryByReactApp = React.createClass({
             imgFigures.push(<ImgFigure data={value} ref={'imgFigure' + index} key={index}
                                        arrange={this.state.imgsArrangeArr[index]} inverse={this.inverse(index)}
                                        center={this.center(index)}/>);
+            controllerUnits.push(<ControllerUnit />);
         }.bind(this));
+
 
         return (
             <section className="stage" ref="stage">
